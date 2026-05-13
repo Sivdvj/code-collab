@@ -1,7 +1,12 @@
 const express = require("express");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
-const { joinRoom, leaveRoom } = require("./roomManager");
+const {
+  joinRoom,
+  leaveRoom,
+  updateCode,
+  updateLanguage,
+} = require("./roomManager");
 const app = express();
 const PORT = 3000;
 
@@ -17,6 +22,16 @@ io.on("connection", (socket) => {
     socket
       .to(roomId)
       .emit("user-joined", { socketId: socket.id, name: username });
+  });
+
+  socket.on("code-change", ({ roomId, code }) => {
+    updateCode(roomId, code);
+    socket.to(roomId).emit("code-update", code);
+  });
+
+  socket.on("language-change", ({ roomId, language }) => {
+    updateLanguage(roomId, language);
+    socket.to(roomId).emit("language-update", language);
   });
 
   socket.on("disconnect", () => {

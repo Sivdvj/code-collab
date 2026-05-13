@@ -25,6 +25,14 @@ function leaveRoom(socketId) {
   return null;
 }
 
+function updateCode(roomId, code) {
+  if (rooms.has(roomId)) rooms.get(roomId).code = code;
+}
+
+function updateLanguage(roomId, language) {
+  if (rooms.has(roomId)) rooms.get(roomId).language = language;
+}
+
 function serializeRoom(room) {
   return {
     code: room.code,
@@ -36,4 +44,10 @@ function serializeRoom(room) {
   };
 }
 
-module.exports = { joinRoom, leaveRoom, serializeRoom };
+module.exports = {
+  joinRoom,
+  leaveRoom,
+  updateCode,
+  updateLanguage,
+  serializeRoom,
+};
