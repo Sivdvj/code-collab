@@ -1,7 +1,7 @@
 const express = require("express");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
-
+const { joinRoom, leaveRoom } = require("./roomManager");
 const app = express();
 const PORT = 3000;
 
@@ -10,8 +10,20 @@ const io = new Server(server);
 
 io.on("connection", (socket) => {
   console.log("User connected: " + socket.id);
+  socket.on("join-room", (roomId, username) => {
+    const room = joinRoom(roomId, socket.id, username);
+    socket.join(roomId);
+    socket.emit("room-joined", room);
+    socket
+      .to(roomId)
+      .emit("user-joined", { socketId: socket.id, name: username });
+  });
 
   socket.on("disconnect", () => {
+    const res = leaveRoom(socket.id);
+    if (res) {
+      socket.to(res.roomId).emit("user-left", { socketId: socket.id });
+    }
     console.log("User disconnected: " + socket.id);
   });
 });
