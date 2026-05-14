@@ -33,6 +33,13 @@ function updateLanguage(roomId, language) {
   if (rooms.has(roomId)) rooms.get(roomId).language = language;
 }
 
+function updateCursor(roomId, socketId, cursor) {
+  let room = rooms.get(roomId);
+  if (room && room.users.has(socketId)) {
+    room.users.get(socketId).cursor = cursor;
+  }
+}
+
 function serializeRoom(room) {
   return {
     code: room.code,
@@ -49,5 +56,5 @@ module.exports = {
   leaveRoom,
   updateCode,
   updateLanguage,
-  serializeRoom,
+  updateCursor,
 };

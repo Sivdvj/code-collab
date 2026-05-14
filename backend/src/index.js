@@ -6,6 +6,7 @@ const {
   leaveRoom,
   updateCode,
   updateLanguage,
+  updateCursor,
 } = require("./roomManager");
 const app = express();
 const PORT = 3000;
@@ -34,6 +35,12 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("language-update", language);
   });
 
+  socket.on("cursor-move", ({ roomId, cursor }) => {
+    updateCursor(roomId, socket.id, cursor);
+    socket
+      .to(roomId)
+      .emit("cursor-update", { socketId: socket.id, cursor: cursor });
+  });
   socket.on("disconnect", () => {
     const res = leaveRoom(socket.id);
     if (res) {
