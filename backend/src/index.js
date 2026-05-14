@@ -1,6 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
+const cors = require("cors");
+
 const {
   joinRoom,
   leaveRoom,
@@ -9,10 +12,14 @@ const {
   updateCursor,
 } = require("./roomManager");
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL,
+  },
+});
 
 io.on("connection", (socket) => {
   console.log("User connected: " + socket.id);
