@@ -12,7 +12,6 @@ function Home() {
       alert("Please fill all the fields");
       return;
     }
-    socket.connect();
     navigate(`/editor/${roomId}`, {
       state: { name },
     });
