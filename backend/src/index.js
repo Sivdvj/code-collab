@@ -34,12 +34,12 @@ io.on("connection", (socket) => {
 
   socket.on("code-change", ({ roomId, code }) => {
     updateCode(roomId, code);
-    socket.to(roomId).emit("code-update", code);
+    socket.to(roomId).emit("code-update", { code });
   });
 
   socket.on("language-change", ({ roomId, language }) => {
     updateLanguage(roomId, language);
-    socket.to(roomId).emit("language-update", language);
+    socket.to(roomId).emit("language-update", { language });
   });
 
   socket.on("cursor-move", ({ roomId, cursor }) => {
