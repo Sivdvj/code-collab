@@ -9,7 +9,10 @@ function useSocket(roomId, username) {
 
   useEffect(() => {
     socket.connect();
-    socket.emit("join-room", { roomId, username });
+    socket.on("connect", () => {
+      console.log("Socket connected");
+      socket.emit("join-room", { roomId, username });
+    });
 
     socket.on("room-joined", (room) => {
       setCode(room.code);
