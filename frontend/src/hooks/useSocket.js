@@ -35,6 +35,11 @@ function useSocket(roomId, username) {
     };
   }, []);
 
-  return { code, lang, users, joined };
+  let codeChange = (newCode) => {
+    socket.emit("code-change", { roomId, code: newCode });
+    setCode(newCode);
+  };
+
+  return { code, lang, users, joined, codeChange };
 }
 export default useSocket;

@@ -8,7 +8,7 @@ function EditorPage() {
 
   let name = location.state.name;
 
-  let { code, lang, users, joined } = useSocket(roomId, name);
+  let { code, lang, users, joined, codeChange } = useSocket(roomId, name);
   if (!joined) return <div>Connecting....</div>;
 
   return (
@@ -21,6 +21,7 @@ function EditorPage() {
         value={code}
         language={lang}
         theme="vs-dark"
+        onChange={(val) => codeChange(val || "")}
         options={{ fontSize: 14, minimap: { enabled: false } }}
       />
     </div>
