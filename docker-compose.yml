@@ -1,0 +1,41 @@
+services:
+  frontend:
+    build: ./frontend
+    container_name: codecollab-frontend
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.codecollab.rule=Host(`cc.sivv.me`)"
+      - "traefik.http.routers.codecollab.entrypoints=websecure"
+      - "traefik.http.routers.codecollab.tls.certresolver=letsencrypt"
+      - "traefik.http.services.codecollab.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik-net"
+
+    networks:
+      - traefik-net
+
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: codecollab-backend
+
+    env_file:
+      - ./backend/.env
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.codecollab-api.rule=Host(`api.cc.sivv.me`)"
+      - "traefik.http.routers.codecollab-api.entrypoints=websecure"
+      - "traefik.http.routers.codecollab-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.codecollab-api.loadbalancer.server.port=3000"
+      - "traefik.docker.network=traefik-net"
+
+    networks:
+      - traefik-net
+
+    restart: unless-stopped
+
+networks:
+  traefik-net:
+    external: true
