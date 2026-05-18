@@ -1,17 +1,29 @@
 import { useParams, useLocation } from "react-router";
+import Editor from "@monaco-editor/react";
+import useSocket from "../hooks/useSocket";
 
-function Editor() {
+function EditorPage() {
   let { roomId } = useParams();
   let location = useLocation();
 
   let name = location.state.name;
+
+  let { code, lang, users, joined } = useSocket(roomId, name);
+  if (!joined) return <div>Connecting....</div>;
 
   return (
     <div>
       <h1>Editor</h1>
       <p>Room ID: {roomId}</p>
       <p>User: {name}</p>
+      <Editor
+        height="90vh"
+        value={code}
+        language={lang}
+        theme="vs-dark"
+        options={{ fontSize: 14, minimap: { enabled: false } }}
+      />
     </div>
   );
 }
-export default Editor;
+export default EditorPage;
