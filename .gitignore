@@ -28,3 +28,6 @@ build/
 
 .env
 .env.*
+
+docker-compose.override.yml
+client.js
