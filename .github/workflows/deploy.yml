@@ -23,7 +23,7 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
 
           script: |
-            cd /home/sivdvj/codecollab
+            cd /home/sivdvj/code-collab
             git pull origin main
 
             docker compose down
