@@ -33,7 +33,6 @@ function useSocket(roomId, username) {
     });
 
     return () => {
-      socket.disconnect();
       socket.removeAllListeners();
     };
   }, []);
