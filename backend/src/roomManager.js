@@ -18,7 +18,13 @@ function leaveRoom(socketId) {
   for (let [roomId, room] of rooms.entries()) {
     if (room.users.has(socketId)) {
       room.users.delete(socketId);
-      if (room.users.size === 0) rooms.delete(roomId);
+      if (room.users.size === 0) {
+        setTimeout(() => {
+          if (rooms.users.size === 0) {
+            rooms.delete(roomId);
+          }
+        }, 300000);
+      }
       return { roomId };
     }
   }
