@@ -9,6 +9,7 @@ function joinRoom(roomId, socketId, username) {
     });
   }
   const room = rooms.get(roomId);
+  console.log(room);
   room.users.set(socketId, { name: username, cursor: { line: 0, column: 0 } });
   return serializeRoom(room);
 }
@@ -20,7 +21,7 @@ function leaveRoom(socketId) {
       room.users.delete(socketId);
       if (room.users.size === 0) {
         setTimeout(() => {
-          if (rooms.users.size === 0) {
+          if (room.users.size === 0) {
             rooms.delete(roomId);
           }
         }, 300000);
