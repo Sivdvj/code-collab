@@ -1,6 +1,7 @@
 import { useParams, useLocation } from "react-router";
 import Editor from "@monaco-editor/react";
 import useSocket from "../hooks/useSocket";
+import UserList from "./UserList";
 
 function EditorPage() {
   let { roomId } = useParams();
@@ -16,6 +17,7 @@ function EditorPage() {
       <h1>Editor</h1>
       <p>Room ID: {roomId}</p>
       <p>User: {name}</p>
+      <UserList userlist={users} />
       <Editor
         height="90vh"
         value={code}
