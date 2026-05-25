@@ -42,6 +42,10 @@ function useSocket(roomId, username) {
     setCode(newCode);
   };
 
-  return { code, lang, users, joined, codeChange };
+  let langChange = (newLang) => {
+    socket.emit("language-change", { roomId, language: newLang });
+    setLang(newLang);
+  };
+  return { code, lang, users, joined, codeChange, langChange };
 }
 export default useSocket;

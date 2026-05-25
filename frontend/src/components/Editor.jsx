@@ -2,6 +2,7 @@ import { useParams, useLocation } from "react-router";
 import Editor from "@monaco-editor/react";
 import useSocket from "../hooks/useSocket";
 import UserList from "./UserList";
+import ToolBar from "./ToolBar";
 
 function EditorPage() {
   let { roomId } = useParams();
@@ -9,7 +10,10 @@ function EditorPage() {
 
   let name = location.state.name;
 
-  let { code, lang, users, joined, codeChange } = useSocket(roomId, name);
+  let { code, lang, users, joined, codeChange, langChange } = useSocket(
+    roomId,
+    name,
+  );
   if (!joined) return <div>Connecting....</div>;
 
   return (
@@ -17,6 +21,7 @@ function EditorPage() {
       <h1>Editor</h1>
       <p>Room ID: {roomId}</p>
       <p>User: {name}</p>
+      <ToolBar language={lang} onLangChange={langChange} />
       <UserList userlist={users} />
       <Editor
         height="90vh"
