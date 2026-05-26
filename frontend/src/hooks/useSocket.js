@@ -26,7 +26,7 @@ function useSocket(roomId, username) {
     });
 
     socket.on("code-update", ({ code }) => setCode(code));
-    socket.on("language-update", ({ lang }) => setLang(lang));
+    socket.on("language-update", ({ language: lang }) => setLang(lang));
 
     socket.on("user-left", ({ socketId }) => {
       setUsers((prev) => prev.filter((u) => u.socketId !== socketId));
