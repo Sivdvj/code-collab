@@ -13,7 +13,19 @@ function Home() {
       return;
     }
     navigate(`/editor/${roomId}`, {
-      state: { name },
+      state: { name, action: "join" },
+    });
+  };
+
+  let handleCreateRoom = () => {
+    if (!name.trim()) {
+      alert("Please fill the name");
+      return;
+    }
+    const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+    navigate(`/editor/${roomId}`, {
+      state: { name, action: "create" },
     });
   };
 
@@ -29,15 +41,16 @@ function Home() {
           onChange={(e) => setName(e.target.value)}
         />
       </p>
+      <button onClick={handleCreateRoom}>Create Room</button>
       <p>
-        Enter Room ID:
+        Enter RoomId:
         <input
           type="text"
-          placeholder="Enter room Id"
+          placeholder="Enter room id"
           value={roomId}
           onChange={(e) => setRoomId(e.target.value)}
         />
-        <button onClick={handleJoin}>Join</button>
+        <button onClick={handleJoin}>Join Room</button>
       </p>
     </div>
   );

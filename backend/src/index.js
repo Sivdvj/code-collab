@@ -5,6 +5,7 @@ const { createServer } = require("http");
 const cors = require("cors");
 
 const {
+  createRoom,
   joinRoom,
   leaveRoom,
   updateCode,
@@ -23,10 +24,25 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("User connected: " + socket.id);
-  socket.on("join-room", ({ roomId, username }) => {
-    const room = joinRoom(roomId, socket.id, username);
+
+  socket.on("create-room", ({ roomId, username }) => {
+    const res = createRoom(roomId, socket.id, username);
+    if (res.error) {
+      socket.emit("room-error", { message: res.error });
+      return;
+    }
     socket.join(roomId);
-    socket.emit("room-joined", room);
+    socket.emit("room-joined", res.room);
+  });
+
+  socket.on("join-room", ({ roomId, username }) => {
+    const res = joinRoom(roomId, socket.id, username);
+    if (res.error) {
+      socket.emit("room-error", { message: res.error });
+      return;
+    }
+    socket.join(roomId);
+    socket.emit("room-joined", res.room);
     socket
       .to(roomId)
       .emit("user-joined", { socketId: socket.id, name: username });

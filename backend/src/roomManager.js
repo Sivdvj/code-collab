@@ -2,16 +2,26 @@ const rooms = new Map();
 
 function joinRoom(roomId, socketId, username) {
   if (!rooms.has(roomId)) {
-    rooms.set(roomId, {
-      code: "// Start coding",
-      language: "javascript",
-      users: new Map(),
-    });
+    return { error: "Room does not exist" };
   }
-  const room = rooms.get(roomId);
-  console.log(room);
+  let room = rooms.get(roomId);
   room.users.set(socketId, { name: username, cursor: { line: 0, column: 0 } });
-  return serializeRoom(room);
+  return { room: serializeRoom(room) };
+}
+
+function createRoom(roomId, socketId, username) {
+  if (rooms.has(roomId)) {
+    return { error: "Room already exists" };
+  }
+  let room = {
+    owner: socketId,
+    code: "// Start coding",
+    language: "javascript",
+    users: new Map(),
+  };
+  room.users.set(socketId, { name: username, cursor: { line: 0, column: 0 } });
+  rooms.set(roomId, room);
+  return { room: serializeRoom(room) };
 }
 
 function leaveRoom(socketId) {
@@ -49,6 +59,7 @@ function updateCursor(roomId, socketId, cursor) {
 
 function serializeRoom(room) {
   return {
+    owner: room.owner,
     code: room.code,
     language: room.language,
     users: Array.from(room.users, ([socketId, user]) => ({
@@ -59,6 +70,7 @@ function serializeRoom(room) {
 }
 
 module.exports = {
+  createRoom,
   joinRoom,
   leaveRoom,
   updateCode,

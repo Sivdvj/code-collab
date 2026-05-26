@@ -1,17 +1,19 @@
 import socket from "../socket";
 import { useState, useEffect } from "react";
 
-function useSocket(roomId, username) {
+function useSocket(roomId, username, action = "join") {
   let [code, setCode] = useState("");
   let [lang, setLang] = useState("");
   let [users, setUsers] = useState([]);
   let [joined, setJoined] = useState(false);
+  let [error, setError] = useState(null);
 
   useEffect(() => {
     socket.connect();
-    socket.on("connect", () => {
+    socket.once("connect", () => {
       console.log("Socket connected");
-      socket.emit("join-room", { roomId, username });
+      if (action === "join") socket.emit("join-room", { roomId, username });
+      else socket.emit("create-room", { roomId, username });
     });
 
     socket.on("room-joined", (room) => {
@@ -19,6 +21,11 @@ function useSocket(roomId, username) {
       setLang(room.language);
       setUsers(room.users);
       setJoined(true);
+      setError(null);
+    });
+
+    socket.on("room-error", (data) => {
+      setError(data.message);
     });
 
     socket.on("user-joined", ({ socketId, name }) => {
@@ -33,6 +40,7 @@ function useSocket(roomId, username) {
     });
 
     return () => {
+      socket.disconnect();
       socket.removeAllListeners();
     };
   }, []);
@@ -46,6 +54,6 @@ function useSocket(roomId, username) {
     socket.emit("language-change", { roomId, language: newLang });
     setLang(newLang);
   };
-  return { code, lang, users, joined, codeChange, langChange };
+  return { code, lang, users, joined, codeChange, langChange, error };
 }
 export default useSocket;
