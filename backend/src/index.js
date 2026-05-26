@@ -43,9 +43,11 @@ io.on("connection", (socket) => {
     }
     socket.join(roomId);
     socket.emit("room-joined", res.room);
+    
+    const joinedUser = res.room.users.find((u) => u.socketId === socket.id);
     socket
       .to(roomId)
-      .emit("user-joined", { socketId: socket.id, name: username });
+      .emit("user-joined", { socketId: socket.id, name: username, color: joinedUser.color });
   });
 
   socket.on("code-change", ({ roomId, code }) => {

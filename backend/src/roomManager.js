@@ -1,11 +1,28 @@
 const rooms = new Map();
+const COLORS = [
+  "#FF6B6B",
+  "#4ECDC4",
+  "#FFD93D",
+  "#6BCB77",
+  "#4D96FF",
+  "#B983FF",
+  "#FF9F1C",
+];
+
+function getRandomColor() {
+  return COLORS[Math.floor(Math.random() * COLORS.length)];
+}
 
 function joinRoom(roomId, socketId, username) {
   if (!rooms.has(roomId)) {
     return { error: "Room does not exist" };
   }
   let room = rooms.get(roomId);
-  room.users.set(socketId, { name: username, cursor: { line: 0, column: 0 } });
+  room.users.set(socketId, {
+    name: username,
+    color: getRandomColor(),
+    cursor: { line: 0, column: 0 },
+  });
   return { room: serializeRoom(room) };
 }
 
@@ -19,7 +36,11 @@ function createRoom(roomId, socketId, username) {
     language: "javascript",
     users: new Map(),
   };
-  room.users.set(socketId, { name: username, cursor: { line: 0, column: 0 } });
+  room.users.set(socketId, {
+    name: username,
+    color: getRandomColor(),
+    cursor: { line: 0, column: 0 },
+  });
   rooms.set(roomId, room);
   return { room: serializeRoom(room) };
 }

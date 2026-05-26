@@ -28,8 +28,8 @@ function useSocket(roomId, username, action = "join") {
       setError(data.message);
     });
 
-    socket.on("user-joined", ({ socketId, name }) => {
-      setUsers((prev) => [...prev, { socketId, name }]);
+    socket.on("user-joined", ({ socketId, name, color }) => {
+      setUsers((prev) => [...prev, { socketId, name, color }]);
     });
 
     socket.on("code-update", ({ code }) => setCode(code));
