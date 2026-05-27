@@ -1,4 +1,4 @@
-function UserList({ userlist, onLangChange }) {
+function UserList({ userlist }) {
   return (
     <div>
       Users
