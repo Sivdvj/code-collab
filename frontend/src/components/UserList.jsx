@@ -1,9 +1,12 @@
-function UserList({ userlist }) {
+function UserList({ userlist, mysocketId, kickUser }) {
+  let me = userlist.find((u) => u.socketId === mysocketId);
+  let owner = me?.isOwner;
+
   return (
     <div>
       Users
       {userlist.map((user) => (
-        <div key={user.socketId}>
+        <div key={user.socketId} style={{ display: "flex" }}>
           <div
             style={{
               width: "12px",
@@ -13,6 +16,10 @@ function UserList({ userlist }) {
             }}
           />
           {user.name}
+          {user.isOwner && <span>Owner</span>}
+          {owner && user.socketId !== mysocketId && (
+            <button onClick={() => kickUser(user.socketId)}>Kick</button>
+          )}
         </div>
       ))}
     </div>

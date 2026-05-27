@@ -78,6 +78,16 @@ function updateCursor(roomId, socketId, cursor) {
   }
 }
 
+function kickUser(roomId, socketId, targetId) {
+  let room = rooms.get(roomId);
+  if (socketId != room.owner) return null;
+
+  let kicked = room.users.get(targetId);
+  leaveRoom(targetId);
+
+  return kicked;
+}
+
 function serializeRoom(room) {
   return {
     owner: room.owner,
@@ -86,6 +96,7 @@ function serializeRoom(room) {
     users: Array.from(room.users, ([socketId, user]) => ({
       socketId,
       ...user,
+      isOwner: socketId === room.owner,
     })),
   };
 }
@@ -97,4 +108,5 @@ module.exports = {
   updateCode,
   updateLanguage,
   updateCursor,
+  kickUser,
 };

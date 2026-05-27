@@ -13,11 +13,17 @@ function EditorPage() {
   let name = location.state.name;
   let action = location.state.action;
 
-  let { code, lang, users, joined, codeChange, langChange, error } = useSocket(
-    roomId,
-    name,
-    action,
-  );
+  let {
+    code,
+    lang,
+    users,
+    joined,
+    codeChange,
+    langChange,
+    error,
+    mysocketId,
+    kickUser,
+  } = useSocket(roomId, name, action);
 
   useEffect(() => {
     if (joined && action === "create") {
@@ -37,7 +43,7 @@ function EditorPage() {
       <p>Room ID: {roomId}</p>
       <p>User: {name}</p>
       <ToolBar language={lang} onLangChange={langChange} />
-      <UserList userlist={users} />
+      <UserList userlist={users} mysocketId={mysocketId} kickUser={kickUser} />
       <Editor
         height="90vh"
         value={code}

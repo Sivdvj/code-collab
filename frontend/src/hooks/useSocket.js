@@ -7,10 +7,11 @@ function useSocket(roomId, username, action = "join") {
   let [users, setUsers] = useState([]);
   let [joined, setJoined] = useState(false);
   let [error, setError] = useState(null);
-
+  let [mysocketId, setMysocketId] = useState("");
   useEffect(() => {
     socket.connect();
     socket.once("connect", () => {
+      setMysocketId(socket.id);
       console.log("Socket connected");
       if (action === "join") socket.emit("join-room", { roomId, username });
       else socket.emit("create-room", { roomId, username });
@@ -39,6 +40,15 @@ function useSocket(roomId, username, action = "join") {
       setUsers((prev) => prev.filter((u) => u.socketId !== socketId));
     });
 
+    socket.on("user-kicked", ({ socketId, name }) => {
+      setUsers((prev) => prev.filter((u) => u.socketId !== socketId));
+      console.log(`${name} was removed`);
+    });
+
+    socket.on("kicked", () => {
+      setError("You were removed from the room");
+    });
+
     return () => {
       socket.disconnect();
       socket.removeAllListeners();
@@ -54,6 +64,20 @@ function useSocket(roomId, username, action = "join") {
     socket.emit("language-change", { roomId, language: newLang });
     setLang(newLang);
   };
-  return { code, lang, users, joined, codeChange, langChange, error };
+
+  let kickUser = (targetSocketId) => {
+    socket.emit("kick-user", { roomId, targetId: targetSocketId });
+  };
+  return {
+    code,
+    lang,
+    users,
+    joined,
+    codeChange,
+    langChange,
+    error,
+    mysocketId,
+    kickUser,
+  };
 }
 export default useSocket;
