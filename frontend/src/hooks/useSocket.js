@@ -1,6 +1,15 @@
 import socket from "../socket";
 import { useState, useEffect } from "react";
 
+function getUserId() {
+  let userId = sessionStorage.getItem("userId");
+  if (!userId) {
+    userId = Math.random().toString(36).substring(2, 10);
+    sessionStorage.setItem("userId", userId);
+  }
+  return userId;
+}
+
 function useSocket(roomId, username, action = "join") {
   let [code, setCode] = useState("");
   let [lang, setLang] = useState("");
@@ -13,8 +22,10 @@ function useSocket(roomId, username, action = "join") {
     socket.once("connect", () => {
       setMysocketId(socket.id);
       console.log("Socket connected");
-      if (action === "join") socket.emit("join-room", { roomId, username });
-      else socket.emit("create-room", { roomId, username });
+      let userId = getUserId();
+      if (action === "join")
+        socket.emit("join-room", { roomId, username, userId });
+      else socket.emit("create-room", { roomId, username, userId });
     });
 
     socket.on("room-joined", (room) => {

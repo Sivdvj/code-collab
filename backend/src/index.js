@@ -26,8 +26,8 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("User connected: " + socket.id);
 
-  socket.on("create-room", ({ roomId, username }) => {
-    const res = createRoom(roomId, socket.id, username);
+  socket.on("create-room", ({ roomId, username, userId }) => {
+    const res = createRoom(roomId, socket.id, username, userId);
     if (res.error) {
       socket.emit("room-error", { message: res.error });
       return;
@@ -36,8 +36,8 @@ io.on("connection", (socket) => {
     socket.emit("room-joined", res.room);
   });
 
-  socket.on("join-room", ({ roomId, username }) => {
-    const res = joinRoom(roomId, socket.id, username);
+  socket.on("join-room", ({ roomId, username, userId }) => {
+    const res = joinRoom(roomId, socket.id, username, userId);
     if (res.error) {
       socket.emit("room-error", { message: res.error });
       return;

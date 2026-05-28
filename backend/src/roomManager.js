@@ -13,12 +13,13 @@ function getRandomColor() {
   return COLORS[Math.floor(Math.random() * COLORS.length)];
 }
 
-function joinRoom(roomId, socketId, username) {
+function joinRoom(roomId, socketId, username, userId) {
   if (!rooms.has(roomId)) {
     return { error: "Room does not exist" };
   }
   let room = rooms.get(roomId);
   room.users.set(socketId, {
+    userId: userId,
     name: username,
     color: getRandomColor(),
     cursor: { line: 0, column: 0 },
@@ -26,17 +27,18 @@ function joinRoom(roomId, socketId, username) {
   return { room: serializeRoom(room) };
 }
 
-function createRoom(roomId, socketId, username) {
+function createRoom(roomId, socketId, username, userId) {
   if (rooms.has(roomId)) {
     return { error: "Room already exists" };
   }
   let room = {
-    owner: socketId,
+    owner: userId,
     code: "// Start coding",
     language: "javascript",
     users: new Map(),
   };
   room.users.set(socketId, {
+    userId: userId,
     name: username,
     color: getRandomColor(),
     cursor: { line: 0, column: 0 },
@@ -80,7 +82,8 @@ function updateCursor(roomId, socketId, cursor) {
 
 function kickUser(roomId, socketId, targetId) {
   let room = rooms.get(roomId);
-  if (socketId != room.owner) return null;
+  let user = room.users.get(socketId);
+  if (!user || user.userId !== room.owner) return null;
 
   let kicked = room.users.get(targetId);
   leaveRoom(targetId);
@@ -96,7 +99,7 @@ function serializeRoom(room) {
     users: Array.from(room.users, ([socketId, user]) => ({
       socketId,
       ...user,
-      isOwner: socketId === room.owner,
+      isOwner: user.userId === room.owner,
     })),
   };
 }
