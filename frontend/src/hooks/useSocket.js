@@ -17,6 +17,8 @@ function useSocket(roomId, username, action = "join") {
   let [joined, setJoined] = useState(false);
   let [error, setError] = useState(null);
   let [mysocketId, setMysocketId] = useState("");
+  let [cursor, setCursor] = useState({});
+
   useEffect(() => {
     socket.connect();
     socket.once("connect", () => {
@@ -47,6 +49,10 @@ function useSocket(roomId, username, action = "join") {
     socket.on("code-update", ({ code }) => setCode(code));
     socket.on("language-update", ({ language: lang }) => setLang(lang));
 
+    socket.on("cursor-update", ({ socketId, cursor }) => {
+      console.log(socketId, cursor);
+      setCursor((prev) => ({ ...prev, [socketId]: cursor }));
+    });
     socket.on("user-left", ({ socketId }) => {
       setUsers((prev) => prev.filter((u) => u.socketId !== socketId));
     });
@@ -79,13 +85,23 @@ function useSocket(roomId, username, action = "join") {
   let kickUser = (targetSocketId) => {
     socket.emit("kick-user", { roomId, targetId: targetSocketId });
   };
+
+  let cursorChange = (e) => {
+    socket.emit("cursor-move", {
+      roomId,
+      cursor: { line: e.position.lineNumber, column: e.position.column },
+    });
+  };
+
   return {
     code,
     lang,
     users,
     joined,
+    cursor,
     codeChange,
     langChange,
+    cursorChange,
     error,
     mysocketId,
     kickUser,

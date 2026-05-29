@@ -18,8 +18,10 @@ function EditorPage() {
     lang,
     users,
     joined,
+    cursor,
     codeChange,
     langChange,
+    cursorChange,
     error,
     mysocketId,
     kickUser,
@@ -61,6 +63,11 @@ function EditorPage() {
         theme="vs-dark"
         onChange={(val) => codeChange(val || "")}
         options={{ fontSize: 14, minimap: { enabled: false } }}
+        onMount={(editor) => {
+          editor.onDidChangeCursorPosition((e) => {
+            cursorChange(e);
+          });
+        }}
       />
     </div>
   );
