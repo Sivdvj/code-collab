@@ -40,10 +40,20 @@ function EditorPage() {
   return (
     <div>
       <h1>Editor</h1>
-      <p>Room ID: {roomId}</p>
-      <p>User: {name}</p>
-      <ToolBar language={lang} onLangChange={langChange} />
-      <UserList userlist={users} mysocketId={mysocketId} kickUser={kickUser} />
+      <div>
+        <p>User: {name}</p>
+        <ToolBar
+          language={lang}
+          onLangChange={langChange}
+          userCount={users.length}
+          roomId={roomId}
+        />
+        <UserList
+          userlist={users}
+          mysocketId={mysocketId}
+          kickUser={kickUser}
+        />
+      </div>
       <Editor
         height="90vh"
         value={code}
