@@ -19,7 +19,9 @@ function UserList({ userlist, mysocketId, kickUser }) {
                 className="w-5 h-5 rounded-full"
                 style={{ background: user.color }}
               />
-              <div>{user.name}</div>
+              <div className="uppercase tracking-wider font-bold">
+                {user.name}
+              </div>
             </div>
             {user.isOwner && (
               <Icon icon="lucide:crown" className="w-5 h-5 text-amber-300" />
