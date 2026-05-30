@@ -1,7 +1,15 @@
-function ToolBar({ language, onLangChange, userCount, roomId }) {
+function ToolBar({ user, language, onLangChange, userCount, roomId }) {
+  let copyRoomId = async () => {
+    await navigator.clipboard.writeText(roomId);
+    alert("Room ID copied!");
+  };
   return (
     <div>
-      <div>Room ID: {roomId}</div>
+      <div>username: {user}</div>
+      <div>
+        Room ID: {roomId}
+        <button onClick={() => copyRoomId()}>Copy</button>
+      </div>
       <div>{userCount} users</div>
       <select value={language} onChange={(e) => onLangChange(e.target.value)}>
         <option value="javascript">JS</option>

@@ -40,35 +40,38 @@ function EditorPage() {
   if (!joined) return <div>Connecting....</div>;
 
   return (
-    <div>
-      <h1>Editor</h1>
-      <div>
-        <p>User: {name}</p>
-        <ToolBar
-          language={lang}
-          onLangChange={langChange}
-          userCount={users.length}
-          roomId={roomId}
-        />
+    <div className="flex h-screen bg-zinc-950 text-white">
+      <div className="w-64 border-r border-zinc-800 p-4">
         <UserList
           userlist={users}
           mysocketId={mysocketId}
           kickUser={kickUser}
         />
       </div>
-      <Editor
-        height="90vh"
-        value={code}
-        language={lang}
-        theme="vs-dark"
-        onChange={(val) => codeChange(val || "")}
-        options={{ fontSize: 14, minimap: { enabled: false } }}
-        onMount={(editor) => {
-          editor.onDidChangeCursorPosition((e) => {
-            cursorChange(e);
-          });
-        }}
-      />
+      <div className="flex flex-1 flex-col">
+        <ToolBar
+          user={name}
+          language={lang}
+          onLangChange={langChange}
+          userCount={users.length}
+          roomId={roomId}
+        />
+        <div className="flex-1">
+          <Editor
+            height="100%"
+            value={code}
+            language={lang}
+            theme="vs-dark"
+            onChange={(val) => codeChange(val || "")}
+            options={{ fontSize: 14, minimap: { enabled: false } }}
+            onMount={(editor) => {
+              editor.onDidChangeCursorPosition((e) => {
+                cursorChange(e);
+              });
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 }
