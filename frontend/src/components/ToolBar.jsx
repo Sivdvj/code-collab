@@ -7,7 +7,7 @@ function ToolBar({ user, language, onLangChange, roomId }) {
   return (
     <div className="flex items-center border-b border-zinc-800 p-4 justify-between">
       <div className="flex gap-2 items-center font-bold">
-        username: <p className="tracking-wider uppercase">{user}</p>
+        Username: <p className="tracking-wider uppercase">{user}</p>
       </div>
       <div className="flex gap-2 items-center">
         <div className="font-bold tracking-wider">Room:</div>
