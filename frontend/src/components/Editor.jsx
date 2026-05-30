@@ -40,7 +40,7 @@ function EditorPage() {
   if (!joined) return <div>Connecting....</div>;
 
   return (
-    <div className="flex h-screen bg-zinc-950 text-white">
+    <div className="flex h-screen bg-zinc-950 text-zinc-300">
       <div className="w-64 border-r border-zinc-800 p-4">
         <UserList
           userlist={users}
@@ -53,7 +53,6 @@ function EditorPage() {
           user={name}
           language={lang}
           onLangChange={langChange}
-          userCount={users.length}
           roomId={roomId}
         />
         <div className="flex-1">
