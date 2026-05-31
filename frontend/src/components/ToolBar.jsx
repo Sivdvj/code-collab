@@ -1,8 +1,10 @@
 import { Icon } from "@iconify/react";
+import toast from "react-hot-toast";
+
 function ToolBar({ user, language, onLangChange, roomId }) {
   let copyRoomId = async () => {
     await navigator.clipboard.writeText(roomId);
-    alert("Room ID copied!");
+    toast.success("Room ID copied");
   };
   return (
     <div className="flex items-center border-b border-zinc-800 p-4 justify-between">

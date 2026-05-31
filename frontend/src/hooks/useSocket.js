@@ -1,5 +1,6 @@
 import socket from "../socket";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 function getUserId() {
   let userId = sessionStorage.getItem("userId");
@@ -44,10 +45,14 @@ function useSocket(roomId, username, action = "join") {
 
     socket.on("user-joined", ({ socketId, name, color }) => {
       setUsers((prev) => [...prev, { socketId, name, color }]);
+      toast(`${name} joined the room`);
     });
 
     socket.on("code-update", ({ code }) => setCode(code));
-    socket.on("language-update", ({ language: lang }) => setLang(lang));
+    socket.on("language-update", ({ language: lang }) => {
+      setLang(lang);
+      toast.success(`Language was updated to ${lang}`);
+    });
 
     socket.on("cursor-update", ({ socketId, cursor }) => {
       console.log(socketId, cursor);
@@ -59,11 +64,12 @@ function useSocket(roomId, username, action = "join") {
 
     socket.on("user-kicked", ({ socketId, name }) => {
       setUsers((prev) => prev.filter((u) => u.socketId !== socketId));
-      console.log(`${name} was removed`);
+      toast.error(`${name} was kicked`);
     });
 
     socket.on("kicked", () => {
       setError("You were removed from the room");
+      toast.error("You were removed from the room");
     });
 
     return () => {
