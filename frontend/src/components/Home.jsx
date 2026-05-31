@@ -49,7 +49,7 @@ function Home() {
 
   return (
     <div className="bg-zinc-950 h-screen text-zinc-300 flex items-center justify-center">
-      <div className="bg-zinc-900 p-8 w-full max-w-7xl rounded-xl flex flex-col gap-7">
+      <div className="bg-zinc-900 p-8 w-full max-w-3xl rounded-xl flex flex-col gap-7">
         <div className="flex flex-col gap-1">
           <h2 className="text-4xl font-bold mb-1">CodeCollab</h2>
           <p className="font-bold tracking-wider text-zinc-400 mb-3.5 border-b-2 border-zinc-500">
@@ -69,7 +69,7 @@ function Home() {
         </p>
         <div className="font-bold text-zinc-400 tracking-wide flex gap-3.5 items-center">
           <button
-            className="py-2 px-4 bg-zinc-300 text-zinc-700 rounded-full flex gap-2 items-center hover:scale-105 border-2 border-zinc-400"
+            className="py-2 px-4 bg-zinc-300 text-zinc-700 rounded-full flex gap-2 items-center hover:scale-105 border-2 border-zinc-400 cursor-pointer"
             onClick={handleCreateRoom}
           >
             <Icon
@@ -85,7 +85,13 @@ function Home() {
             value={roomId}
             onChange={(e) => setRoomId(e.target.value)}
           />
-          <button onClick={handleJoin}>Join</button>
+          <button
+            onClick={handleJoin}
+            disabled={!roomId.trim()}
+            className="disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Join
+          </button>
         </div>
       </div>
     </div>
