@@ -58,8 +58,9 @@ function useSocket(roomId, username, action = "join") {
       console.log(socketId, cursor);
       setCursor((prev) => ({ ...prev, [socketId]: cursor }));
     });
-    socket.on("user-left", ({ socketId }) => {
+    socket.on("user-left", ({ socketId, name }) => {
       setUsers((prev) => prev.filter((u) => u.socketId !== socketId));
+      toast(`${name} left the room`);
     });
 
     socket.on("user-kicked", ({ socketId, name }) => {

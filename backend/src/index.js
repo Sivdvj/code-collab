@@ -85,7 +85,9 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const res = leaveRoom(socket.id);
     if (res) {
-      socket.to(res.roomId).emit("user-left", { socketId: socket.id });
+      socket
+        .to(res.roomId)
+        .emit("user-left", { socketId: socket.id, name: res.name });
     }
     console.log("User disconnected: " + socket.id);
   });

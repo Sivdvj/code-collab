@@ -51,6 +51,7 @@ function leaveRoom(socketId) {
   // TODO: currently is an O(n) lookup; maintain an inverted index for O(1) lookup
   for (let [roomId, room] of rooms.entries()) {
     if (room.users.has(socketId)) {
+      let user = room.users.get(socketId);
       room.users.delete(socketId);
       if (room.users.size === 0) {
         setTimeout(() => {
@@ -59,7 +60,7 @@ function leaveRoom(socketId) {
           }
         }, 300000);
       }
-      return { roomId };
+      return { roomId, name: user.name };
     }
   }
   return null;
