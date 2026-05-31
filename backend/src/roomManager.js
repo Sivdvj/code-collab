@@ -13,6 +13,10 @@ function getRandomColor() {
   return COLORS[Math.floor(Math.random() * COLORS.length)];
 }
 
+function hasRoom(roomId) {
+  return rooms.has(roomId);
+}
+
 function joinRoom(roomId, socketId, username, userId) {
   if (!rooms.has(roomId)) {
     return { error: "Room does not exist" };
@@ -106,6 +110,7 @@ function serializeRoom(room) {
 }
 
 module.exports = {
+  hasRoom,
   createRoom,
   joinRoom,
   leaveRoom,

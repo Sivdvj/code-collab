@@ -5,6 +5,7 @@ const { createServer } = require("http");
 const cors = require("cors");
 
 const {
+  hasRoom,
   createRoom,
   joinRoom,
   leaveRoom,
@@ -15,6 +16,12 @@ const {
 } = require("./roomManager");
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors({ origin: process.env.FRONTEND_URL }));
+
+app.get("/room/:roomId", (req, res) => {
+  res.json({ exists: hasRoom(req.params.roomId) });
+});
 
 const server = createServer(app);
 const io = new Server(server, {

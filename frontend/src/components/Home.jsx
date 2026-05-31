@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import socket from "../socket";
 import { Icon } from "@iconify/react";
+import toast from "react-hot-toast";
 
 function Home() {
   let [name, setName] = useState("");
@@ -9,19 +10,34 @@ function Home() {
 
   let navigate = useNavigate();
 
-  let handleJoin = () => {
+  let handleJoin = async () => {
     if (!name.trim() || !roomId.trim()) {
-      alert("Please fill all the fields");
+      toast.error("Please fill all the fields");
       return;
     }
-    navigate(`/editor/${roomId}`, {
-      state: { name, action: "join" },
-    });
+
+    try {
+      let response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/room/${roomId}`,
+      );
+      let data = await response.json();
+
+      if (!data.exists) {
+        toast.error("Room does not exist");
+        return;
+      }
+
+      navigate(`/editor/${roomId}`, {
+        state: { name, action: "join" },
+      });
+    } catch (error) {
+      toast.error("Failed to connect to server");
+    }
   };
 
   let handleCreateRoom = () => {
     if (!name.trim()) {
-      alert("Please fill the name");
+      toast.error("Please fill the name");
       return;
     }
     const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
