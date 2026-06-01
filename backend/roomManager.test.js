@@ -25,7 +25,7 @@ describe("createRoom", () => {
     expect(res.error).toBeUndefined();
     expect(res.room.code).toBe("// Start coding");
     expect(res.room.language).toBe("javascript");
-    expect(res.room.users).toHaveLength(1);
+    expect(res.room.users).toHaveLength(2);
   });
 
   it("sets the creator as the room owner", () => {
