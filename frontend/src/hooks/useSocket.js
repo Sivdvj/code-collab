@@ -35,6 +35,13 @@ function useSocket(roomId, username, action = "join") {
       setCode(room.code);
       setLang(room.language);
       setUsers(room.users);
+
+      let existingCursors = {};
+      room.users.forEach((user) => {
+        existingCursors[user.socketId] = user.cursor;
+      });
+      setCursor(existingCursors);
+
       setJoined(true);
       setError(null);
     });
