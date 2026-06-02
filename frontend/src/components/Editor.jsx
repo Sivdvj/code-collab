@@ -1,5 +1,5 @@
 import { useParams, useLocation, useNavigate } from "react-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import useSocket from "../hooks/useSocket";
 import UserList from "./UserList";
@@ -12,6 +12,7 @@ function EditorPage() {
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
   const decorationsRef = useRef([]);
+  const [editorReady, setEditorReady] = useState(false);
 
   let name = location.state.name;
   let action = location.state.action;
@@ -55,7 +56,7 @@ function EditorPage() {
       decorationsRef.current,
       newDecorations,
     );
-  }, [cursor, users, mysocketId]);
+  }, [cursor, users, mysocketId, editorReady]);
 
   useEffect(() => {
     if (joined && action === "create") {
@@ -108,6 +109,7 @@ function EditorPage() {
             onMount={(editor, monaco) => {
               editorRef.current = editor;
               monacoRef.current = monaco;
+              setEditorReady(true);
               editor.onDidChangeCursorPosition((e) => {
                 cursorChange(e);
               });
