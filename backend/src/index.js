@@ -3,6 +3,7 @@ const express = require("express");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
 const cors = require("cors");
+const axios = require("axios");
 
 const {
   hasRoom,
@@ -16,7 +17,7 @@ const {
 } = require("./roomManager");
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+app.use(express.json());
 app.use(cors({ origin: process.env.FRONTEND_URL }));
 
 app.get("/room/:roomId", (req, res) => {
@@ -25,7 +26,7 @@ app.get("/room/:roomId", (req, res) => {
 
 app.post("/execute", (req, res) => {
   res.json({
-    stdout: "asdasdasd",
+    stdout: "Code execution coming soonnn",
   });
 });
 
