@@ -23,6 +23,12 @@ app.get("/room/:roomId", (req, res) => {
   res.json({ exists: hasRoom(req.params.roomId) });
 });
 
+app.post("/execute", (req, res) => {
+  res.json({
+    stdout: "asdasdasd",
+  });
+});
+
 const server = createServer(app);
 const io = new Server(server, {
   cors: {

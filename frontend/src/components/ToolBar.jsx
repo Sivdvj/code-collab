@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 import toast from "react-hot-toast";
 
-function ToolBar({ user, language, onLangChange, roomId }) {
+function ToolBar({ user, language, onLangChange, roomId, runCode }) {
   let copyRoomId = async () => {
     await navigator.clipboard.writeText(roomId);
     toast.success("Room ID copied");
@@ -21,18 +21,26 @@ function ToolBar({ user, language, onLangChange, roomId }) {
           <Icon icon="mage:copy-fill" className="w-7 h-7 text-zinc-300" />
         </button>
       </div>
-      <div className="flex gap-2 items-center">
-        <div className="font-bold tracking-wider">Language:</div>
-        <select
-          className="rounded-lg bg-zinc-900 p-2 border-2 border-zinc-500/60"
-          value={language}
-          onChange={(e) => onLangChange(e.target.value)}
+      <div className="flex gap-6 items-center">
+        <div className="flex gap-2 items-center">
+          <div className="font-bold tracking-wider">Language:</div>
+          <select
+            className="rounded-lg bg-zinc-900 p-2 border-2 border-zinc-500/60"
+            value={language}
+            onChange={(e) => onLangChange(e.target.value)}
+          >
+            <option value="javascript">JS</option>
+            <option value="python">Python</option>
+            <option value="cpp">C++</option>
+            <option value="java">Java</option>
+          </select>
+        </div>
+        <button
+          className="rounded-lg text-black hover:cursor-pointer hover:scale-110 bg-amber-400 p-2 border-2 border-amber-500"
+          onClick={runCode}
         >
-          <option value="javascript">JS</option>
-          <option value="python">Python</option>
-          <option value="cpp">C++</option>
-          <option value="java">Java</option>
-        </select>
+          <Icon icon="line-md:play-filled" className="w-6 h-6" />
+        </button>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import Editor from "@monaco-editor/react";
 import useSocket from "../hooks/useSocket";
 import UserList from "./UserList";
 import ToolBar from "./ToolBar";
+import api from "../api";
 
 function EditorPage() {
   let { roomId } = useParams();
@@ -13,6 +14,7 @@ function EditorPage() {
   const monacoRef = useRef(null);
   const decorationsRef = useRef([]);
   const [editorReady, setEditorReady] = useState(false);
+  let [output, setOutput] = useState("");
 
   let name = location.state.name;
   let action = location.state.action;
@@ -70,6 +72,20 @@ function EditorPage() {
   if (error) return <div>Error: {error}</div>;
   if (!joined) return <div>Connecting....</div>;
 
+  let runCode = async () => {
+    try {
+      setOutput("Running...");
+
+      let { data } = await api.post("/execute", {
+        code,
+        language: lang,
+      });
+      setOutput(data.stdout);
+    } catch (error) {
+      setOutput("Execution failed");
+    }
+  };
+
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-300">
       <style>
@@ -91,30 +107,37 @@ function EditorPage() {
           kickUser={kickUser}
         />
       </div>
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col h-screen">
         <ToolBar
           user={name}
           language={lang}
           onLangChange={langChange}
           roomId={roomId}
+          runCode={runCode}
         />
-        <div className="flex-1">
-          <Editor
-            height="100%"
-            value={code}
-            language={lang}
-            theme="vs-dark"
-            onChange={(val) => codeChange(val || "")}
-            options={{ fontSize: 14, minimap: { enabled: false } }}
-            onMount={(editor, monaco) => {
-              editorRef.current = editor;
-              monacoRef.current = monaco;
-              setEditorReady(true);
-              editor.onDidChangeCursorPosition((e) => {
-                cursorChange(e);
-              });
-            }}
-          />
+        <div className="flex flex-col flex-1">
+          <div className="flex-4">
+            <Editor
+              height="100%"
+              value={code}
+              language={lang}
+              theme="vs-dark"
+              onChange={(val) => codeChange(val || "")}
+              options={{ fontSize: 14, minimap: { enabled: false } }}
+              onMount={(editor, monaco) => {
+                editorRef.current = editor;
+                monacoRef.current = monaco;
+                setEditorReady(true);
+                editor.onDidChangeCursorPosition((e) => {
+                  cursorChange(e);
+                });
+              }}
+            />
+          </div>
+          <div className="flex-1">
+            <h2 className="font-bold tracking-wide text-lg">Output</h2>
+            <div className="font-semibold">{output}</div>
+          </div>
         </div>
       </div>
     </div>
