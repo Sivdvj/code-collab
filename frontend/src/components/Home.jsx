@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import socket from "../socket";
 import { Icon } from "@iconify/react";
 import toast from "react-hot-toast";
+import api from "../api";
 
 function Home() {
   let [name, setName] = useState("");
@@ -17,10 +18,7 @@ function Home() {
     }
 
     try {
-      let response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/room/${roomId}`,
-      );
-      let data = await response.json();
+      let { data } = await api.get(`/room/${roomId}`);
 
       if (!data.exists) {
         toast.error("Room does not exist");
