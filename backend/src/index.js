@@ -67,9 +67,13 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("code-change", ({ roomId, code }) => {
+  socket.on("code-change", ({ roomId, code, sentAt }) => {
     updateCode(roomId, code);
-    socket.to(roomId).emit("code-update", { code });
+
+    socket.to(roomId).emit("code-update", {
+      code,
+      sentAt,
+    });
   });
 
   socket.on("language-change", ({ roomId, language }) => {

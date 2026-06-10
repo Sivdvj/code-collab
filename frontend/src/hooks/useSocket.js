@@ -55,7 +55,14 @@ function useSocket(roomId, username, action = "join") {
       toast(`${name} joined the room`);
     });
 
-    socket.on("code-update", ({ code }) => setCode(code));
+    socket.on("code-update", ({ code, sentAt }) => {
+      setCode(code);
+
+      const latency = Date.now() - sentAt;
+
+      console.log(`Sync latency: ${latency}ms`);
+    });
+
     socket.on("language-update", ({ language: lang }) => {
       setLang(lang);
       toast.success(`Language was updated to ${lang}`);
