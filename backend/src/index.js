@@ -96,6 +96,10 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("latency-ping", (sentAt) => {
+    socket.emit("latency-pong", sentAt);
+  });
+
   socket.on("disconnect", () => {
     const res = leaveRoom(socket.id);
     if (res) {
