@@ -1,5 +1,14 @@
 {
+  "name": "codecollab",
+  "scripts": {
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && nodemon src/index.js",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
   "dependencies": {
     "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
   }
 }
