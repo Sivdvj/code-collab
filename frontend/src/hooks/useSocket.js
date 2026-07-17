@@ -25,7 +25,11 @@ function useSocket(roomId, username, action = "join") {
 
   useEffect(() => {
     socket.connect();
-    socket.once("connect", () => {
+    if (import.meta.env.DEV) {
+      window.socket = socket;
+    }
+
+    socket.on("connect", () => {
       setMysocketId(socket.id);
       console.log("Socket connected");
       let userId = getUserId();
