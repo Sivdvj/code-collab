@@ -1,3 +1,5 @@
+const Y = require("yjs");
+
 const rooms = new Map();
 const COLORS = [
   "#FF6B6B",
@@ -37,10 +39,13 @@ function createRoom(roomId, socketId, username, userId) {
   }
   let room = {
     owner: userId,
-    code: "// Start coding",
+    doc: new Y.Doc(),
     language: "javascript",
     users: new Map(),
   };
+
+  let text = room.doc.getText("code");
+  text.insert(0, "//Start coding");
   room.users.set(socketId, {
     userId: userId,
     name: username,
@@ -71,7 +76,12 @@ function leaveRoom(socketId) {
 }
 
 function updateCode(roomId, code) {
-  if (rooms.has(roomId)) rooms.get(roomId).code = code;
+  if (rooms.has(roomId)) {
+    let room = rooms.get(roomId);
+    let text = room.doc.getText("code");
+    text.delete(0, text.length);
+    text.insert(0, code);
+  }
 }
 
 function updateLanguage(roomId, language) {
@@ -99,7 +109,7 @@ function kickUser(roomId, socketId, targetId) {
 function serializeRoom(room) {
   return {
     owner: room.owner,
-    code: room.code,
+    code: room.doc.getText("code"),
     language: room.language,
     users: Array.from(room.users, ([socketId, user]) => ({
       socketId,
