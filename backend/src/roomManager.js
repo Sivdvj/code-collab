@@ -11,6 +11,9 @@ const COLORS = [
   "#FF9F1C",
 ];
 
+function getRoom(roomId) {
+  return rooms.get(roomId);
+}
 function getRandomColor() {
   return COLORS[Math.floor(Math.random() * COLORS.length)];
 }
@@ -75,15 +78,6 @@ function leaveRoom(socketId) {
   return null;
 }
 
-function updateCode(roomId, code) {
-  if (rooms.has(roomId)) {
-    let room = rooms.get(roomId);
-    let text = room.doc.getText("code");
-    text.delete(0, text.length);
-    text.insert(0, code);
-  }
-}
-
 function updateLanguage(roomId, language) {
   if (rooms.has(roomId)) rooms.get(roomId).language = language;
 }
@@ -124,8 +118,8 @@ module.exports = {
   createRoom,
   joinRoom,
   leaveRoom,
-  updateCode,
   updateLanguage,
   updateCursor,
   kickUser,
+  getRoom,
 };

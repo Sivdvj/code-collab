@@ -1,5 +1,6 @@
 import socket from "../socket";
-import { useState, useEffect } from "react";
+import * as Y from "yjs";
+import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 
 function getUserId() {
@@ -12,7 +13,9 @@ function getUserId() {
 }
 
 function useSocket(roomId, username, action = "join") {
-  let [code, setCode] = useState("");
+  let ydoc = useRef(new Y.Doc());
+  let ytext = useRef(ydoc.current.getText("code"));
+
   let [lang, setLang] = useState("");
   let [users, setUsers] = useState([]);
   let [joined, setJoined] = useState(false);
@@ -94,8 +97,7 @@ function useSocket(roomId, username, action = "join") {
   }, []);
 
   let codeChange = (newCode) => {
-    socket.emit("code-change", { roomId, code: newCode });
-    setCode(newCode);
+    socket.emit("y-update", { roomId, update });
   };
 
   let langChange = (newLang) => {
