@@ -1,12 +1,14 @@
 import { useParams, useLocation, useNavigate } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
+import { MonacoBinding } from "y-monaco";
 import useSocket from "../hooks/useSocket";
 import UserList from "./UserList";
 import ToolBar from "./ToolBar";
 import api from "../api";
 
 function EditorPage() {
+  const bindingRef = useRef(null);
   let { roomId } = useParams();
   let location = useLocation();
   let navigate = useNavigate();
@@ -20,12 +22,11 @@ function EditorPage() {
   let action = location.state.action;
 
   let {
-    code,
+    ytext,
     lang,
     users,
     joined,
     cursor,
-    codeChange,
     langChange,
     cursorChange,
     error,
@@ -69,13 +70,19 @@ function EditorPage() {
     }
   }, [joined]);
 
+  useEffect(() => {
+    return () => {
+      bindingRef.current?.destroy();
+    };
+  }, []);
+
   if (error) return <div>Error: {error}</div>;
   if (!joined) return <div>Connecting....</div>;
 
   let runCode = async () => {
     try {
       setOutput("Running...");
-
+      let code = ytext.current.toString();
       let { data } = await api.post("/execute", {
         code,
         language: lang,
@@ -119,14 +126,20 @@ function EditorPage() {
           <div className="flex-4">
             <Editor
               height="100%"
-              value={code}
               language={lang}
               theme="vs-dark"
-              onChange={(val) => codeChange(val || "")}
               options={{ fontSize: 14, minimap: { enabled: false } }}
               onMount={(editor, monaco) => {
                 editorRef.current = editor;
                 monacoRef.current = monaco;
+
+                let model = editor.getModel();
+                bindingRef.current = new MonacoBinding(
+                  ytext.current,
+                  model,
+                  new Set([editor]),
+                  null,
+                );
                 setEditorReady(true);
                 editor.onDidChangeCursorPosition((e) => {
                   cursorChange(e);

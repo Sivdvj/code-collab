@@ -35,7 +35,8 @@ function useSocket(roomId, username, action = "join") {
     });
 
     socket.on("room-joined", (room) => {
-      setCode(room.code);
+      Y.applyUpdate(ydoc.current, new Uint8Array(room.update), "server");
+
       setLang(room.language);
       setUsers(room.users);
 
@@ -56,14 +57,6 @@ function useSocket(roomId, username, action = "join") {
     socket.on("user-joined", ({ socketId, name, color }) => {
       setUsers((prev) => [...prev, { socketId, name, color }]);
       toast(`${name} joined the room`);
-    });
-
-    socket.on("code-update", ({ code, sentAt }) => {
-      setCode(code);
-
-      const latency = Date.now() - sentAt;
-
-      console.log(`Sync latency: ${latency}ms`);
     });
 
     socket.on("language-update", ({ language: lang }) => {
@@ -90,15 +83,22 @@ function useSocket(roomId, username, action = "join") {
       toast.error("You were removed from the room");
     });
 
+    socket.on("y-update", ({ update }) => {
+      Y.applyUpdate(ydoc.current, new Uint8Array(update), "server");
+    });
+
+    let handleUpdate = (update, origin) => {
+      if (origin === "server") return;
+      socket.emit("y-update", { roomId, update });
+    };
+    ydoc.current.on("update", handleUpdate);
+
     return () => {
+      ydoc.current.off("update", handleUpdate);
       socket.disconnect();
       socket.removeAllListeners();
     };
   }, []);
-
-  let codeChange = (newCode) => {
-    socket.emit("y-update", { roomId, update });
-  };
 
   let langChange = (newLang) => {
     socket.emit("language-change", { roomId, language: newLang });
@@ -117,12 +117,11 @@ function useSocket(roomId, username, action = "join") {
   };
 
   return {
-    code,
+    ytext,
     lang,
     users,
     joined,
     cursor,
-    codeChange,
     langChange,
     cursorChange,
     error,

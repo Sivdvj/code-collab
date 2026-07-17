@@ -48,7 +48,7 @@ function createRoom(roomId, socketId, username, userId) {
   };
 
   let text = room.doc.getText("code");
-  text.insert(0, "//Start coding");
+  text.insert(0, "// Start coding");
   room.users.set(socketId, {
     userId: userId,
     name: username,
@@ -103,7 +103,7 @@ function kickUser(roomId, socketId, targetId) {
 function serializeRoom(room) {
   return {
     owner: room.owner,
-    code: room.doc.getText("code"),
+    update: Y.encodeStateAsUpdate(room.doc),
     language: room.language,
     users: Array.from(room.users, ([socketId, user]) => ({
       socketId,

@@ -70,6 +70,8 @@ io.on("connection", (socket) => {
 
   socket.on("y-update", ({ roomId, update }) => {
     let room = getRoom(roomId);
+    if (!room) return;
+
     Y.applyUpdate(room.doc, update);
 
     socket.to(roomId).emit("y-update", {
