@@ -4,16 +4,17 @@ const { Server } = require("socket.io");
 const { createServer } = require("http");
 const cors = require("cors");
 const axios = require("axios");
+const Y = require("yjs");
 
 const {
   hasRoom,
   createRoom,
   joinRoom,
   leaveRoom,
-  updateCode,
   updateLanguage,
   updateCursor,
   kickUser,
+  getRoom,
 } = require("./roomManager");
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -67,12 +68,14 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("code-change", ({ roomId, code, sentAt }) => {
-    updateCode(roomId, code);
+  socket.on("y-update", ({ roomId, update }) => {
+    let room = getRoom(roomId);
+    if (!room) return;
 
-    socket.to(roomId).emit("code-update", {
-      code,
-      sentAt,
+    Y.applyUpdate(room.doc, update);
+
+    socket.to(roomId).emit("y-update", {
+      update,
     });
   });
 

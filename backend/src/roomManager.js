@@ -1,3 +1,5 @@
+const Y = require("yjs");
+
 const rooms = new Map();
 const COLORS = [
   "#FF6B6B",
@@ -9,6 +11,9 @@ const COLORS = [
   "#FF9F1C",
 ];
 
+function getRoom(roomId) {
+  return rooms.get(roomId);
+}
 function getRandomColor() {
   return COLORS[Math.floor(Math.random() * COLORS.length)];
 }
@@ -37,10 +42,13 @@ function createRoom(roomId, socketId, username, userId) {
   }
   let room = {
     owner: userId,
-    code: "// Start coding",
+    doc: new Y.Doc(),
     language: "javascript",
     users: new Map(),
   };
+
+  let text = room.doc.getText("code");
+  text.insert(0, "// Start coding");
   room.users.set(socketId, {
     userId: userId,
     name: username,
@@ -70,10 +78,6 @@ function leaveRoom(socketId) {
   return null;
 }
 
-function updateCode(roomId, code) {
-  if (rooms.has(roomId)) rooms.get(roomId).code = code;
-}
-
 function updateLanguage(roomId, language) {
   if (rooms.has(roomId)) rooms.get(roomId).language = language;
 }
@@ -99,7 +103,7 @@ function kickUser(roomId, socketId, targetId) {
 function serializeRoom(room) {
   return {
     owner: room.owner,
-    code: room.code,
+    update: Y.encodeStateAsUpdate(room.doc),
     language: room.language,
     users: Array.from(room.users, ([socketId, user]) => ({
       socketId,
@@ -114,8 +118,8 @@ module.exports = {
   createRoom,
   joinRoom,
   leaveRoom,
-  updateCode,
   updateLanguage,
   updateCursor,
   kickUser,
+  getRoom,
 };
